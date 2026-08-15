@@ -1,0 +1,21 @@
+{
+  "name": "agl-case-study",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "npm@11.6.2",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "check-types": "turbo check-types",
+    "test": "turbo test",
+    "storybook": "turbo storybook"
+  },
+  "devDependencies": {
+    "turbo": "^2.10.10"
+  }
+}

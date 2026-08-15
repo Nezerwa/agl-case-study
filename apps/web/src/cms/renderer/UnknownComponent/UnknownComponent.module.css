@@ -1,0 +1,14 @@
+.unknown {
+  margin: 1rem;
+  padding: 1rem 1.25rem;
+  border: 1px dashed #c2570b;
+  border-radius: 4px;
+  background-color: #faebdf;
+  color: #8a3d05;
+  font-family: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace;
+  font-size: 0.875rem;
+}
+
+.name {
+  font-weight: 700;
+}

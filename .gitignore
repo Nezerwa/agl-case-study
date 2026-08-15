@@ -1,0 +1,52 @@
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Build output
+.next/
+out/
+dist/
+build/
+storybook-static/
+
+# Turborepo local cache
+.turbo/
+
+# Testing
+coverage/
+
+# TypeScript incremental build info
+*.tsbuildinfo
+
+# Environment files — never commit secrets.
+# .env.example is tracked on purpose: it documents which variables exist
+# without carrying their values.
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Editor and OS noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+
+# Deployment
+.vercel
+
+# Certificates and keys
+*.pem
+*.key
+
+# Internal working document, not part of the deliverable
+plan.md

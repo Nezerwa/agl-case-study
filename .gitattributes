@@ -1,0 +1,13 @@
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.svg text eol=lf
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.zst binary
+
+package-lock.json -diff linguist-generated
