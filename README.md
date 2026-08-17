@@ -490,24 +490,6 @@ percentage is claimed.
 
 ---
 
-## 18. Assumptions and trade-offs
-
-**CMS.** No CMS endpoint was supplied. CMS-shaped mock data represents the integration
-seam, and the layout action is the single place a real Layout Service call replaces.
-
-**Contact processing.** No CRM, email provider or database was supplied. The form, API
-route, validation and security pipeline are real; downstream processing is mocked.
-
-**Rate limiting.** In-memory and single-instance, as described above.
-
-**Responsive design.** Dedicated tablet and mobile compositions were not supplied, so
-behaviour at those widths was derived from the design system and content requirements.
-Values derived this way are documented as derived rather than confirmed.
-
-**Content.** Article titles, dates, categories and images come from the supplied design.
-Article body copy is placeholder text.
-
----
 
 ## 19. Production evolution
 
