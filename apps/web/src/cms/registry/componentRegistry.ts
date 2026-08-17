@@ -1,7 +1,11 @@
 import type { ComponentType } from "react";
 import type { CmsComponent } from "@agl/cms-types";
 import { Hero } from "@agl/ui";
+import { NewsListing } from "@/components/NewsListing/NewsListing";
+import { ContactForm } from "@/features/contact/ContactForm";
+import { mapDynamicForm } from "../adapters/form.adapter";
 import { mapHero } from "../adapters/hero.adapter";
+import { mapNewsListing } from "../adapters/news.adapter";
 
 type CmsProps = Record<string, unknown>;
 
@@ -10,7 +14,7 @@ export interface CmsComponentDefinition {
   adapt: (cmsComponent: CmsComponent) => CmsProps;
 }
 
-function define<TProps extends object>(
+export function defineCmsComponent<TProps extends object>(
   component: ComponentType<TProps>,
   adapt: (cmsComponent: CmsComponent) => TProps,
 ): CmsComponentDefinition {
@@ -21,7 +25,9 @@ function define<TProps extends object>(
 }
 
 const registry: Record<string, CmsComponentDefinition> = {
-  Hero: define(Hero, mapHero),
+  Hero: defineCmsComponent(Hero, mapHero),
+  NewsListing: defineCmsComponent(NewsListing, mapNewsListing),
+  ContactForm: defineCmsComponent(ContactForm, mapDynamicForm),
 };
 
 export function resolveCmsComponent(

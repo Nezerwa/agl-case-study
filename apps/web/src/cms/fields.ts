@@ -24,6 +24,34 @@ export function readNumber(fields: CmsFields, key: string): number | undefined {
   return typeof field.value === "number" ? field.value : undefined;
 }
 
+/**
+ * Reads a string off one entry of a repeating field. Entries arrive as plain objects
+ * rather than `{ value }` wrappers, and `Object.hasOwn` keeps a polluted prototype
+ * from supplying content the CMS never authored.
+ */
+export function readEntryText(item: unknown, key: string): string | undefined {
+  if (!isRecord(item) || !Object.hasOwn(item, key)) return undefined;
+
+  const value = item[key];
+  if (typeof value !== "string") return undefined;
+
+  const trimmed = value.trim();
+  return trimmed === "" ? undefined : trimmed;
+}
+
+/**
+ * Returns the raw items untouched. A repeating field can hold anything, so narrowing
+ * each item is the calling adapter's job — this only guarantees you get an array.
+ */
+export function readList(
+  fields: CmsFields,
+  key: string,
+): unknown[] | undefined {
+  const field = fields[key];
+  if (!isRecord(field)) return undefined;
+  return Array.isArray(field.value) ? field.value : undefined;
+}
+
 export function readImage(
   fields: CmsFields,
   key: string,
