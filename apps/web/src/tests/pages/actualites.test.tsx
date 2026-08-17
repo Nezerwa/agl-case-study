@@ -33,7 +33,7 @@ describe("actualites getStaticProps", () => {
 });
 
 describe("ActualitesPage", () => {
-  it("renders the components declared in the main placeholder", async () => {
+  it("renders the Hero from CMS data through the registry", async () => {
     const layout = await getLayout("actualites");
 
     render(<ActualitesPage layout={layout} />);
@@ -41,14 +41,76 @@ describe("ActualitesPage", () => {
     expect(
       screen.getByRole("heading", { level: 1, name: "Nos Actualités" }),
     ).toBeInTheDocument();
+    expect(screen.getByText("Actualités")).toBeInTheDocument();
   });
 
-  it("renders the unknown-component notice for unregistered components", async () => {
+  it("renders the Hero badge icon supplied by the CMS", async () => {
+    const layout = await getLayout("actualites");
+
+    const { container } = render(<ActualitesPage layout={layout} />);
+
+    expect(container.querySelector("img")).toHaveAttribute(
+      "alt",
+      "",
+    );
+  });
+
+  it("renders the same Hero twice from different CMS data", async () => {
     const layout = await getLayout("actualites");
 
     render(<ActualitesPage layout={layout} />);
 
-    expect(screen.getByRole("note")).toHaveTextContent("NewsletterBanner");
+    expect(
+      screen.getByRole("heading", { level: 1, name: "Nos Actualités" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { level: 2, name: "Restez informé" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Inscrivez-vous à notre newsletter pour recevoir les dernières actualités",
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it("gives the second Hero no badge, because its CMS data authors none", async () => {
+    const layout = await getLayout("actualites");
+
+    render(<ActualitesPage layout={layout} />);
+
+    expect(screen.getAllByText("Actualités")).toHaveLength(1);
+  });
+
+  it("never skips a heading level", async () => {
+    const layout = await getLayout("actualites");
+
+    render(<ActualitesPage layout={layout} />);
+
+    const levels = screen
+      .getAllByRole("heading")
+      .map((heading) => Number(heading.tagName.slice(1)));
+
+    expect(levels[0]).toBe(1);
+    for (let i = 1; i < levels.length; i += 1) {
+      expect(levels[i] - levels[i - 1]).toBeLessThanOrEqual(1);
+    }
+  });
+
+  it("renders the card titles as h2, directly under the page h1", async () => {
+    const layout = await getLayout("actualites");
+
+    render(<ActualitesPage layout={layout} />);
+
+    expect(screen.getAllByRole("heading", { level: 2 })).toHaveLength(7);
+    expect(screen.queryAllByRole("heading", { level: 3 })).toHaveLength(0);
+  });
+
+  it("resolves every component the layout asks for", async () => {
+    const layout = await getLayout("actualites");
+
+    render(<ActualitesPage layout={layout} />);
+
+    expect(screen.queryAllByRole("note")).toHaveLength(0);
   });
 
   it("renders nothing when the layout carries no route", () => {

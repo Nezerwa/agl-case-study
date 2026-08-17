@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   readImage,
   readLink,
+  readList,
   readNumber,
   readText,
   requireText,
@@ -127,5 +128,31 @@ describe("readLink", () => {
     const field = { cta: { value: { href: "/x", target: "_parent" } } };
 
     expect(readLink(field, "cta")?.target).toBeUndefined();
+  });
+});
+
+describe("readList", () => {
+  it("returns the raw items untouched", () => {
+    const field = { categories: { value: [{ id: "all" }, "loose", 7] } };
+
+    expect(readList(field, "categories")).toEqual([{ id: "all" }, "loose", 7]);
+  });
+
+  it("returns an empty array through, rather than treating it as absent", () => {
+    expect(readList({ categories: { value: [] } }, "categories")).toEqual([]);
+  });
+
+  it("returns undefined for a missing field", () => {
+    expect(readList({}, "categories")).toBeUndefined();
+  });
+
+  it("returns undefined when the value is not an array", () => {
+    expect(readList({ categories: { value: "Tous" } }, "categories")).toBeUndefined();
+    expect(readList({ categories: { value: 42 } }, "categories")).toBeUndefined();
+    expect(readList({ categories: { value: null } }, "categories")).toBeUndefined();
+  });
+
+  it("returns undefined when the field is not a record", () => {
+    expect(readList({ categories: "Tous" }, "categories")).toBeUndefined();
   });
 });

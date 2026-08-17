@@ -1,19 +1,23 @@
 import { describe, expect, it } from "vitest";
-import { Button, Hero } from "../index";
-import type { ButtonProps, ButtonVariant, HeroProps } from "../index";
+import { SiteHeader, isActiveNavItem, normalizePath } from "../index";
+import type { NavItem, SiteHeaderProps, SiteLogo } from "../index";
 
 describe("@agl/ui public API", () => {
   it("exports components from the package root", () => {
-    expect(Button).toBeTypeOf("function");
-    expect(Hero).toBeTypeOf("function");
+    expect(SiteHeader).toBeTypeOf("function");
   });
 
-  it("exports component prop types from the same entry point", () => {
-    const variant: ButtonVariant = "secondary";
-    const buttonProps: ButtonProps = { children: "Envoyer", variant };
-    const heroProps: HeroProps = { title: "Nos Actualités" };
+  it("exports utilities from the package root", () => {
+    expect(isActiveNavItem).toBeTypeOf("function");
+    expect(normalizePath).toBeTypeOf("function");
+  });
 
-    expect(buttonProps.variant).toBe("secondary");
-    expect(heroProps.title).toBe("Nos Actualités");
+  it("exports component types from the same entry point", () => {
+    const logo: SiteLogo = { src: "/logo.jpg", alt: "SOGECO" };
+    const navItems: NavItem[] = [{ label: "Accueil", href: "/" }];
+    const props: SiteHeaderProps = { logo, navItems, currentPath: "/" };
+
+    expect(props.logo.alt).toBe("SOGECO");
+    expect(props.navItems).toHaveLength(1);
   });
 });
