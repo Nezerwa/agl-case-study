@@ -21,9 +21,7 @@ export default function ActualitesPage({ layout }: ActualitesPageProps) {
         <title>{route.displayName ?? route.name}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <main>
-        <CmsPlaceholder name="main" placeholders={route.placeholders} />
-      </main>
+      <CmsPlaceholder name="main" placeholders={route.placeholders} />
     </>
   );
 }
