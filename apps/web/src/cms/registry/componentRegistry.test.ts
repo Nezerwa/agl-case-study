@@ -17,19 +17,6 @@ describe("resolveCmsComponent", () => {
     expect(definition?.adapt).toBeTypeOf("function");
   });
 
-  it("returns undefined for an unregistered component", () => {
-    expect(resolveCmsComponent("NewsletterBanner")).toBeUndefined();
-  });
-
-  it("returns undefined rather than throwing on an empty name", () => {
-    expect(resolveCmsComponent("")).toBeUndefined();
-  });
-
-  it("does not resolve inherited object properties", () => {
-    expect(resolveCmsComponent("toString")).toBeUndefined();
-    expect(resolveCmsComponent("constructor")).toBeUndefined();
-  });
-
   it("runs the adapter bound to the registered component", () => {
     const definition = resolveCmsComponent("Hero");
     const component: CmsComponent = {
@@ -42,10 +29,64 @@ describe("resolveCmsComponent", () => {
       title: "Nos Actualités",
     });
   });
+
+  it("returns undefined for an unregistered component", () => {
+    expect(resolveCmsComponent("NewsletterBanner")).toBeUndefined();
+  });
+
+  it("returns undefined rather than throwing on an empty name", () => {
+    expect(resolveCmsComponent("")).toBeUndefined();
+  });
+
+  it("does not resolve inherited object properties", () => {
+    expect(resolveCmsComponent("toString")).toBeUndefined();
+    expect(resolveCmsComponent("constructor")).toBeUndefined();
+    expect(resolveCmsComponent("hasOwnProperty")).toBeUndefined();
+  });
 });
 
 describe("registeredComponentNames", () => {
-  it("lists Hero", () => {
-    expect(registeredComponentNames()).toContain("Hero");
+  it("reports the registry contents", () => {
+    expect(registeredComponentNames()).toEqual([
+      "Hero",
+      "NewsListing",
+      "ContactForm",
+    ]);
+  });
+});
+
+describe("resolveCmsComponent — NewsListing", () => {
+  it("resolves the registered component", () => {
+    expect(resolveCmsComponent("NewsListing")).toBeDefined();
+  });
+
+  it("runs the adapter bound to the registered component", () => {
+    const definition = resolveCmsComponent("NewsListing");
+    const component: CmsComponent = {
+      uid: "u2",
+      componentName: "NewsListing",
+      fields: {
+        defaultCategory: { value: "all" },
+        categories: { value: [{ id: "all", label: "Tous", value: "all" }] },
+        articles: {
+          value: [
+            {
+              id: "salon",
+              category: "events",
+              categoryLabel: "Événements",
+              title: "Salon",
+              href: "/actualites/salon",
+              image: { src: "/a.svg", alt: "" },
+            },
+          ],
+        },
+      },
+    };
+
+    expect(definition?.adapt(component)).toMatchObject({
+      categories: [{ id: "all", label: "Tous", value: "all" }],
+      initialCategory: "all",
+      articles: [{ id: "salon", category: "events" }],
+    });
   });
 });

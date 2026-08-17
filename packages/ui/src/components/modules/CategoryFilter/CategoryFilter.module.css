@@ -1,0 +1,25 @@
+.filter {
+  border-bottom: 1px solid var(--color-gray-300, #d1d5dc);
+}
+
+.group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  max-width: 1257px;
+  margin-inline: auto;
+  padding: 1.5rem 1rem;
+}
+
+@media (min-width: 768px) {
+  .group {
+    padding: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .group {
+    padding: 1.5rem 2rem;
+  }
+}

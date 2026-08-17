@@ -1,10 +1,39 @@
-/*
- * The single global (non-module) stylesheet in the app.
- * Next.js Pages Router only permits global CSS to be imported from _app.tsx.
- *
- * Everything else is a co-located *.module.css.
- * Design tokens (:root custom properties from the Figma model) land here in Phase 4.
- */
+:root {
+  --font-sans: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+
+  --color-white: #ffffff;
+
+  --color-pink-400: #ff38b3;
+  --color-pink-500: #cc2d90;
+  --color-pink-600: #bf2a87;
+  --color-pink-700: #99226c;
+
+  --color-orange-500: #ff8659;
+
+  --color-blue-700: #292d87;
+  --color-blue-800: #1b3b6f;
+
+  --color-green-600: #2d8653;
+
+  --color-crimson-600: #ba1c57;
+
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-300: #d1d5dc;
+  --color-gray-500: #6a7282;
+  --color-gray-600: #4a5565;
+  --color-gray-700: #364153;
+  --color-gray-800: #656565;
+
+  --gradient-brand: linear-gradient(
+    90deg,
+    var(--color-pink-400),
+    var(--color-pink-500),
+    var(--color-pink-600),
+    var(--color-pink-700)
+  );
+}
 
 *,
 *::before,
@@ -23,7 +52,7 @@ html {
 
 body {
   min-height: 100vh;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--font-sans);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

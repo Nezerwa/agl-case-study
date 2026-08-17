@@ -1,0 +1,40 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  font-family: inherit;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.small {
+  min-height: 28px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.medium {
+  min-height: 40px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+.solid {
+  background-color: var(--color-blue-700, #292d87);
+  color: var(--color-white, #ffffff);
+}
+
+.translucent {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--color-white, #ffffff);
+}
+
+.icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+}

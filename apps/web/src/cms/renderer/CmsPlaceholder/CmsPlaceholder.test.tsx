@@ -7,12 +7,12 @@ const placeholders: CmsPlaceholders = {
   main: [
     {
       uid: "u1",
-      componentName: "Hero",
+      componentName: "Premier",
       fields: { title: { value: "Premier" } },
     },
     {
       uid: "u2",
-      componentName: "Hero",
+      componentName: "Second",
       fields: { title: { value: "Second" } },
     },
   ],
@@ -23,15 +23,15 @@ describe("CmsPlaceholder", () => {
   it("renders every component in the named placeholder", () => {
     render(<CmsPlaceholder name="main" placeholders={placeholders} />);
 
-    expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(2);
+    expect(screen.getAllByRole("note")).toHaveLength(2);
   });
 
   it("preserves the order given by the CMS", () => {
     render(<CmsPlaceholder name="main" placeholders={placeholders} />);
 
-    const headings = screen.getAllByRole("heading", { level: 1 });
-    expect(headings[0]).toHaveTextContent("Premier");
-    expect(headings[1]).toHaveTextContent("Second");
+    const rendered = screen.getAllByRole("note");
+    expect(rendered[0]).toHaveTextContent("Premier");
+    expect(rendered[1]).toHaveTextContent("Second");
   });
 
   it("renders nothing for an empty placeholder", () => {

@@ -1,8 +1,10 @@
 import type { CmsLayout } from "@agl/cms-types";
 import { actualitesLayout } from "../mocks/actualites.mock";
+import { contactLayout } from "../mocks/contact.mock";
 
 const mockLayouts: Record<string, CmsLayout> = {
   actualites: actualitesLayout,
+  contact: contactLayout,
 };
 
 const notFoundLayout: CmsLayout = {

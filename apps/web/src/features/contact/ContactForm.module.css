@@ -1,0 +1,55 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+/**
+ * Off-screen rather than display:none — a field that is not rendered at all is easy for
+ * an automated client to skip, while one that is present but invisible is not. It is
+ * removed from the tab order and from the accessibility tree, so no person meets it.
+ */
+.honeypot {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.status {
+  max-width: 1024px;
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+
+.status:empty {
+  display: none;
+}
+
+.success,
+.error {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 3rem;
+  padding: 1rem 1.25rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+.success {
+  border: 1px solid var(--color-green-600, #2d8653);
+  color: var(--color-green-600, #2d8653);
+}
+
+.error {
+  border: 1px solid var(--color-crimson-600, #ba1c57);
+  color: var(--color-crimson-600, #ba1c57);
+}
+
+@media (min-width: 768px) {
+  .status {
+    padding-inline: 2rem;
+  }
+}
