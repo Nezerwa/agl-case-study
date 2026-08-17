@@ -24,15 +24,21 @@ export function buildCspDirectives(isDevelopment: boolean): CspDirectives {
       ? ["'self'", "'unsafe-inline'", "'unsafe-eval'"]
       : ["'self'"],
 
-    // Verified against the built HTML: production serves every stylesheet as an external
-    // file, with no <style> element and no style="" attribute. The one attribute that did
-    // appear came from next/image on the Hero badge icon, which was already `unoptimized`
-    // and is now a plain <img> — so production needs no inline allowance at all.
+    // 'unsafe-inline' is required by the Pages Router, in both environments.
     //
-    // Development is the opposite: `next dev` injects the whole stylesheet through
-    // JavaScript as inline <style> elements and emits no <link rel="stylesheet">, so
-    // 'self' alone leaves every page completely unstyled.
-    "style-src": isDevelopment ? ["'self'", "'unsafe-inline'"] : ["'self'"],
+    // The server-rendered document links its stylesheets externally, but on a *client-side*
+    // navigation Next fetches the destination route's CSS as text and applies it by creating
+    // an inline <style> element. Without this allowance the browser refuses that element, so
+    // the destination renders with only the CSS the previous document already carried — page
+    // content unstyled, chrome intact — until a manual refresh. A nonce is the alternative,
+    // but a nonce must vary per request and these pages are statically generated, so it would
+    // be a build-time constant and worth nothing.
+    //
+    // `next dev` goes further and delivers all CSS this way, emitting no stylesheet links.
+    //
+    // This applies to styles only. `script-src` above stays free of both 'unsafe-inline' and
+    // 'unsafe-eval' in production, which is where the meaningful protection sits.
+    "style-src": ["'self'", "'unsafe-inline'"],
 
     // data: covers the inlined SVG placeholders Next may emit for small assets.
     "img-src": ["'self'", "data:"],

@@ -69,8 +69,31 @@ describe("content security policy — production", () => {
     expect(production()["connect-src"]).toEqual(["'self'"]);
   });
 
-  it("allows no inline style either, since the build emits none", () => {
-    expect(production()["style-src"]).toEqual(["'self'"]);
+  /**
+   * The Pages Router applies a destination route's CSS during client-side navigation by
+   * creating an inline <style> element, so blocking inline styles leaves every
+   * client-navigated page unstyled until a refresh. Statically generated pages cannot
+   * carry a per-request nonce, so the allowance is the available option.
+   */
+  it("allows inline style, which client-side navigation requires", () => {
+    expect(production()["style-src"]).toEqual(["'self'", "'unsafe-inline'"]);
+  });
+
+  it("confines that allowance to styles — scripts stay strict", () => {
+    expect(production()["style-src"]).toContain("'unsafe-inline'");
+    expect(production()["script-src"]).not.toContain("'unsafe-inline'");
+    expect(production()["script-src"]).not.toContain("'unsafe-eval'");
+  });
+
+  it("leaves every other directive unchanged by that allowance", () => {
+    expect(production()["frame-ancestors"]).toEqual(["'none'"]);
+    expect(production()["object-src"]).toEqual(["'none'"]);
+    expect(production()["base-uri"]).toEqual(["'self'"]);
+    expect(production()["form-action"]).toEqual(["'self'"]);
+    expect(production()["default-src"]).toEqual(["'self'"]);
+    expect(production()["connect-src"]).toEqual(["'self'"]);
+    expect(production()["font-src"]).toEqual(["'self'"]);
+    expect(production()["img-src"]).toEqual(["'self'", "data:"]);
   });
 
   it("upgrades insecure requests", () => {
@@ -92,9 +115,8 @@ describe("content security policy — development only relaxations", () => {
   });
 
   /**
-   * `next dev` delivers CSS as inline <style> elements injected by JavaScript and emits
-   * no <link rel="stylesheet"> at all, so 'self' alone leaves every page unstyled.
-   * Production is the reverse and needs no such allowance.
+   * `next dev` goes further than production and delivers all CSS as injected inline
+   * <style> elements, emitting no stylesheet links at all.
    */
   it("allows the inline styles that next dev injects", () => {
     expect(development()["style-src"]).toContain("'unsafe-inline'");

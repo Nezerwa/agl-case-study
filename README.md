@@ -8,7 +8,7 @@ the same components the application renders.
 Two pages are delivered — **Actualités** and **Contact** — both composed entirely from
 CMS-shaped data rather than hand-assembled in the page files. The Contact page includes a
 configuration-driven form with client and server validation, a real `POST /api/contact`
-endpoint, anti-abuse controls, and site-wide security headers. 480 automated tests cover
+endpoint, anti-abuse controls, and site-wide security headers. 482 automated tests cover
 the component behaviour, the CMS mapping layer, the API pipeline and the security
 configuration.
 
@@ -16,17 +16,17 @@ configuration.
 
 ## 1. Requirements coverage
 
-| Requirement                                    | Implementation                                                                                                                                    |
-| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Functional web application based on the design | `/actualites` and `/contact`, both statically generated                                                                                           |
-| Component-based implementation                 | 13 components in `packages/ui`, consumed by the app and by Storybook                                                                              |
-| Responsive user interface                      | Mobile-first CSS Modules, two shared breakpoints, no per-device components                                                                        |
-| Contact form as complete as possible           | React Hook Form + Zod, real POST to `/api/contact`, server-side revalidation, UI success and error states                                         |
-| Appropriate security considerations            | CSP and related headers, server-side validation, origin check, rate limiting, honeypot, body-size limit                                           |
+| Requirement                                    | Implementation                                                                                                                                                                              |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Functional web application based on the design | `/actualites` and `/contact`, both statically generated                                                                                                                                     |
+| Component-based implementation                 | 13 components in `packages/ui`, consumed by the app and by Storybook                                                                                                                        |
+| Responsive user interface                      | Mobile-first CSS Modules, two shared breakpoints, no per-device components                                                                                                                  |
+| Contact form as complete as possible           | React Hook Form + Zod, real POST to `/api/contact`, server-side revalidation, UI success and error states                                                                                   |
+| Appropriate security considerations            | CSP and related headers, server-side validation, origin check, rate limiting, honeypot, body-size limit                                                                                     |
 | Reusable and dynamic components                | Registry-driven composition; one `Hero` renders three different sections from configuration, and `DynamicForm` renders configuration-defined forms using supported, allowlisted field types |
-| Next.js v14.2 or later                         | **15.5.23**                                                                                                                                       |
-| React v18.2 or later                           | **18.3.1**                                                                                                                                        |
-| Pages Router                                   | `apps/web/src/pages` — no App Router anywhere                                                                                                     |
+| Next.js v14.2 or later                         | **15.5.23**                                                                                                                                                                                 |
+| React v18.2 or later                           | **18.3.1**                                                                                                                                                                                  |
+| Pages Router                                   | `apps/web/src/pages` — no App Router anywhere                                                                                                                                               |
 
 The requirement asks for Next.js 14.2 _or later_; the repository runs 15.5.23 on the
 Pages Router.
@@ -443,7 +443,7 @@ No formal WCAG audit was carried out, so no conformance level is claimed.
 
 ## 16. Testing and quality
 
-**480 tests across 35 files** — 205 in `packages/ui`, 275 in `apps/web`.
+**482 tests across 35 files** — 205 in `packages/ui`, 277 in `apps/web`.
 
 | Area                    | Covered                                                         |
 | ----------------------- | --------------------------------------------------------------- |
@@ -473,39 +473,7 @@ percentage is claimed.
 
 ---
 
-## 17. Technical decisions
-
-| Decision                         | Reason                                                                                                             |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| Turborepo monorepo               | Keeps the app, component library, CMS contracts and Storybook in one repository with explicit dependency direction |
-| Framework-independent `@agl/ui`  | Renderable in Storybook and tests without a Next.js server, and reusable by another application                    |
-| Injected `linkComponent`         | Lets the app supply `next/link` without the library importing Next.js                                              |
-| CMS adapters                     | Isolate the CMS payload shape from component props, so a schema change stops at the adapter                        |
-| Allowlisted component registry   | Content selects among known components; it cannot introduce one                                                    |
-| Generated Zod schema             | One `buildContactSchema` used by browser and server, so validation rules cannot drift                              |
-| React Hook Form in the app layer | Form state management without coupling the UI library to it                                                        |
-| CSS Modules                      | Component-scoped styling with no runtime styling dependency                                                        |
-| Storybook                        | Isolated component documentation, and a check that components render outside the app                               |
-| Mock submission service          | Completes the real browser-to-server flow without inventing downstream infrastructure that was not supplied        |
-
----
-
-
-## 19. Production evolution
-
-These are replacement seams the architecture already provides, not integrations that exist
-today:
-
-| Case-study implementation                               | Production evolution                             |
-| ------------------------------------------------------- | ------------------------------------------------ |
-| CMS-shaped mocks behind `layout.action.ts`              | Real CMS / Layout Service call                   |
-| Mock submission service                                 | CRM, email, ticketing or persistence integration |
-| In-memory rate limiter behind a `RateLimiter` interface | Shared or distributed store                      |
-| Placeholder article copy                                | CMS-authored content                             |
-
----
-
-## 20. Documentation
+## 17. Documentation
 
 | Where                        | What                                                              |
 | ---------------------------- | ----------------------------------------------------------------- |

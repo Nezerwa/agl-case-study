@@ -18,9 +18,9 @@ The production policy was derived by auditing what this application actually loa
 copied from a template:
 
 ```
-default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:;
-font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self';
-form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';
+img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none';
+base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
 ```
 
 Every resource is same-origin: Next's chunks under `/_next/static`, CSS Modules, the
@@ -28,31 +28,38 @@ Every resource is same-origin: Next's chunks under `/_next/static`, CSS Modules,
 `/public`. There is no CDN, analytics, embedded map or external script. The Google Maps
 link in the footer is navigation, not embedding.
 
-**No `'unsafe-inline'` and no `'unsafe-eval'` in production.** Both were checked against
-the built HTML rather than assumed:
+**Scripts are strict; styles carry one required allowance.**
 
-| Checked | Result |
-| --- | --- |
-| Inline `<script>` | Only `__NEXT_DATA__`, `type="application/json"` — parsed as data, never executed |
-| Inline `<style>` | None |
-| Inline `style=""` | One, from `next/image` on the Hero badge icon |
+| Directive | Production | Why |
+| --- | --- | --- |
+| `script-src` | `'self'` | No `'unsafe-inline'`, no `'unsafe-eval'`. The only inline `<script>` in the output is `__NEXT_DATA__`, which is `type="application/json"` — parsed as data, never executed |
+| `style-src` | `'self' 'unsafe-inline'` | Required by Pages Router client-side navigation, below |
 
-That single attribute was the only thing that would have forced
-`style-src 'unsafe-inline'`. The icon is a 20px static SVG that was already passed
-`unoptimized`, so `next/image` was contributing nothing else; it is now a plain `<img>`
-and the production output contains zero inline styles.
+**Why inline styles are permitted.** The server-rendered document links its stylesheets
+externally, but on a *client-side* navigation the Pages Router fetches the destination
+route's CSS as text and applies it by creating an inline `<style>` element. Blocking that
+leaves a client-navigated page with only the CSS the previous document already carried —
+page content unstyled, chrome intact — until the visitor refreshes. This is a
+compatibility requirement of how the router loads route CSS, not a defect.
+
+The alternative is a nonce, which the router supports. **Statically generated pages cannot
+use one:** the HTML is produced at build time and served identically to everyone, so a
+nonce would be a build-time constant and worth nothing. Obtaining real per-request nonces
+would mean abandoning static generation for server rendering plus middleware — a large
+architectural change to satisfy one directive.
+
+The allowance is confined to styles. CSS injection requires an existing injection point to
+exploit; there is no `dangerouslySetInnerHTML` anywhere in the repository and all CMS
+content is escaped by React. Script execution remains fully restricted.
 
 `base-uri 'self'` stops an injected `<base>` from re-pointing every relative URL.
 `form-action 'self'` stops an injected form posting elsewhere. `object-src 'none'`
-removes the plugin surface entirely.
+removes the plugin surface entirely. All remain unchanged.
 
-**Development differs deliberately.** React Refresh evaluates code and HMR opens a
-websocket, so development adds `'unsafe-eval'`, `'unsafe-inline'` and `ws:` to those two
-directives. A test asserts those relaxations never appear in the production policy.
-
-**Static pages cannot use per-request nonces.** The HTML is generated at build time and
-served identically to everyone, so a nonce would be a constant and worth nothing. The
-policy above avoids needing one.
+**Development relaxes two further directives.** React Refresh evaluates code and HMR opens
+a websocket, so development adds `'unsafe-eval'` to `script-src` and `ws:`/`wss:` to
+`connect-src`. Tests assert those two never appear in the production policy, and that
+production `script-src` contains neither `'unsafe-inline'` nor `'unsafe-eval'`.
 
 ### Clickjacking
 
