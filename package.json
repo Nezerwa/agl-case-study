@@ -13,7 +13,8 @@
     "lint": "turbo lint",
     "check-types": "turbo check-types",
     "test": "turbo test",
-    "storybook": "turbo storybook"
+    "storybook": "turbo storybook",
+    "build-storybook": "turbo build-storybook"
   },
   "devDependencies": {
     "turbo": "^2.10.10"
